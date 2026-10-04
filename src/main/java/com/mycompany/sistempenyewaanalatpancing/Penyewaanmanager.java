@@ -10,6 +10,7 @@ package com.mycompany.sistempenyewaanalatpancing;
  */
 public class Penyewaanmanager {
 
+    // Array untuk menyimpan objek
     private Alatpancing[] daftarAlat = new Alatpancing[50];
     private int jumlah = 0;
 
@@ -51,7 +52,7 @@ public class Penyewaanmanager {
         System.out.println("=========================================================================");
     }
 
-    // Menampilkan semua data (memanggil method hasil overriding)
+
     public void tampilkanSemua() {
         if (jumlah == 0) {
             System.out.println("Belum ada data alat pancing.");
@@ -64,7 +65,6 @@ public class Penyewaanmanager {
         System.out.println("=========================================================================");
         System.out.println("Total alat tercatat (objek dibuat): " + Alatpancing.getTotalAlat());
     }
-
 
     public void cariAlat(String kataKunci) {
         boolean ketemu = false;

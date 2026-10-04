@@ -8,6 +8,7 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
+// SUBCLASS 2
 public class Reel extends Alatpancing {
 
     private String tipeReel;
@@ -51,7 +52,7 @@ public class Reel extends Alatpancing {
         return "Reel";
     }
 
-    // Overriding
+    // Overriding: ada biaya perawatan Rp3.000 (sekali sewa)
     @Override
     public double hitungBiayaSewa(int hari) {
         return super.hitungBiayaSewa(hari) + 3000;

@@ -8,6 +8,7 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
+// SUBCLASS 3
 public class Aksesoris extends Alatpancing {
 
     private String jenisAksesoris;
@@ -51,6 +52,7 @@ public class Aksesoris extends Alatpancing {
         return "Aksesoris";
     }
 
+    // Overriding: sewa 3 hari atau lebih dapat diskon 10%
     @Override
     public double hitungBiayaSewa(int hari) {
         double total = super.hitungBiayaSewa(hari);

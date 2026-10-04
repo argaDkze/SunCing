@@ -8,24 +8,26 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
+// SUPERCLASS
 // SUPERCLASS (induk)
 public class Alatpancing {
 
-    // Encapsulation
+    // Encapsulation: semua field private
     private String kode;
     private String nama;
     private double hargaPerHari;
     private int stok;
 
+    // Static: pencatat total objek yang berhasil dibuat
     private static int totalAlat = 0;
 
-    // Constructor
+    // Constructor (memakai this)
     public Alatpancing(String kode, String nama, double hargaPerHari, int stok) {
         this.kode = "-";
         this.nama = "-";
         this.hargaPerHari = 0;
         this.stok = 0;
-
+        // panggil setter supaya data ikut divalidasi
         setKode(kode);
         setNama(nama);
         setHargaPerHari(hargaPerHari);
@@ -33,7 +35,7 @@ public class Alatpancing {
         totalAlat++;
     }
 
-    // Gettet
+    // ===== Getter =====
     public String getKode() {
         return kode;
     }
@@ -50,7 +52,7 @@ public class Alatpancing {
         return stok;
     }
 
-    // Setter
+    // ===== Setter dengan validasi =====
     public void setKode(String kode) {
         if (kode == null || kode.trim().equals("")) {
             System.out.println("Kode tidak boleh kosong!");
@@ -83,14 +85,17 @@ public class Alatpancing {
         }
     }
 
+    // Static method
     public static int getTotalAlat() {
         return totalAlat;
     }
 
+    // Jenis alat (akan di-override oleh subclass)
     public String getJenis() {
         return "Alat Pancing";
     }
 
+    // Method OVERLOADING: hitungBiayaSewa (nama sama, parameter beda)
     public double hitungBiayaSewa(int hari) {
         return hargaPerHari * hari;
     }
@@ -98,11 +103,12 @@ public class Alatpancing {
     public double hitungBiayaSewa(int hari, boolean member) {
         double total = hitungBiayaSewa(hari);
         if (member) {
-            total = total - (total * 0.10);
+            total = total - (total * 0.10); // diskon member 10%
         }
         return total;
     }
 
+    // Menampilkan satu baris data (akan di-override oleh subclass)
     public void tampilkanInfo() {
         System.out.printf("%-8s %-12s %-24s Rp%-10.0f %-5d%n",
                 kode, getJenis(), nama, hargaPerHari, stok);
