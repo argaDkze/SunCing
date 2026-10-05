@@ -10,7 +10,6 @@ package com.mycompany.sistempenyewaanalatpancing;
  */
 public class Penyewaanmanager {
 
-    // Array untuk menyimpan objek
     private Alatpancing[] daftarAlat = new Alatpancing[50];
     private int jumlah = 0;
 

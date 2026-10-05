@@ -154,7 +154,7 @@ public class Main {
 
     static void cetakStruk(Alatpancing alat, int hari, double total, boolean member) {
         System.out.println("\n===== STRUK TRANSAKSI =====");
-        alat.tampilkanInfo(); // dynamic binding: method hasil override yang dijalankan
+        alat.tampilkanInfo();
         System.out.println("Lama sewa   : " + hari + " hari");
         System.out.println("Status      : " + (member ? "Member (dapat diskon)" : "Non-member"));
         System.out.printf("Total biaya : Rp%.0f%n", total);

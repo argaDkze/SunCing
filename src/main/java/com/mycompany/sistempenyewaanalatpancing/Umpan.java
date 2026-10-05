@@ -8,7 +8,7 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
-// SUBCLASS 4 (baru) - menambah variasi bentuk objek untuk Polymorphism
+// SUBCLASS 4 
 public class Umpan extends Alatpancing {
 
     private String jenisUmpan;
@@ -47,19 +47,16 @@ public class Umpan extends Alatpancing {
         }
     }
 
-    // Runtime Polymorphism: identitas jenis berbeda dari subclass lain
     @Override
     public String getJenis() {
         return "Umpan";
     }
 
-    // Runtime Polymorphism: aturan biaya berbeda dari Joran/Reel/Aksesoris
-    // (ditambah biaya kemasan tetap, dan diskon jika beli dalam jumlah besar/berat)
     @Override
     public double hitungBiayaSewa(int hari) {
-        double total = super.hitungBiayaSewa(hari) + 1000; // biaya kemasan
+        double total = super.hitungBiayaSewa(hari) + 1000; 
         if (beratGram >= 100) {
-            total = total - (total * 0.05); // diskon grosir 5%
+            total = total - (total * 0.05); 
         }
         return total;
     }

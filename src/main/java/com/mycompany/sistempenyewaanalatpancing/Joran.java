@@ -52,7 +52,6 @@ public class Joran extends Alatpancing {
         return "Joran";
     }
 
-    // Overriding: ada biaya asuransi Rp5.000 (sekali sewa)
     @Override
     public double hitungBiayaSewa(int hari) {
         return super.hitungBiayaSewa(hari) + 5000;

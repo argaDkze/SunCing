@@ -35,7 +35,7 @@ public class Alatpancing {
         totalAlat++;
     }
 
-    // ===== Getter =====
+    // Getter
     public String getKode() {
         return kode;
     }
@@ -52,7 +52,7 @@ public class Alatpancing {
         return stok;
     }
 
-    // ===== Setter dengan validasi =====
+    // setter
     public void setKode(String kode) {
         if (kode == null || kode.trim().equals("")) {
             System.out.println("Kode tidak boleh kosong!");

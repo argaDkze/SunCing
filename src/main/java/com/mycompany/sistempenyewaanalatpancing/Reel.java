@@ -52,7 +52,6 @@ public class Reel extends Alatpancing {
         return "Reel";
     }
 
-    // Overriding: ada biaya perawatan Rp3.000 (sekali sewa)
     @Override
     public double hitungBiayaSewa(int hari) {
         return super.hitungBiayaSewa(hari) + 3000;
