@@ -9,15 +9,13 @@ import java.util.*;
  * @author Hype AMD
  */
 
-import java.util.Scanner;
+import java.util.*;
 
-import java.util.Scanner;
 
 public class Main {
 
     static Scanner input = new Scanner(System.in);
 
-    // Membaca angka bulat dengan aman
     static int bacaInt(String pesan) {
         while (true) {
             System.out.print(pesan);
@@ -29,7 +27,6 @@ public class Main {
         }
     }
 
-    // Membaca angka desimal dengan aman
     static double bacaDouble(String pesan) {
         while (true) {
             System.out.print(pesan);
@@ -46,7 +43,6 @@ public class Main {
         return input.nextLine();
     }
 
-    // ===== Menu 1: Tambah data =====
     static void tambahData(Penyewaanmanager manager) {
         System.out.println("\n--- TAMBAH ALAT PANCING ---");
         System.out.println("1. Joran");
@@ -69,8 +65,6 @@ public class Main {
         double harga = bacaDouble("Harga sewa/hari   : ");
         int stok = bacaInt("Stok              : ");
 
-        // Dideklarasikan bertipe Superclass (Alatpancing) -> UPCASTING,
-        // objek konkretnya baru diketahui saat runtime (Joran/Reel/Aksesoris/Umpan)
         Alatpancing alat = null;
 
         switch (tipe) {
@@ -101,7 +95,6 @@ public class Main {
         }
     }
 
-    // ===== Menu 3: Pencarian (method overloading) =====
     static void menuCari(Penyewaanmanager manager) {
         System.out.println("\n--- CARI ALAT PANCING ---");
         System.out.println("1. Cari berdasarkan nama");
@@ -124,10 +117,6 @@ public class Main {
         }
     }
 
-    // ===== Menu 4: Simulasi Transaksi (Hitung Biaya Sewa) =====
-    // Mengambil objek lewat referensi bertipe Superclass (cariByKode mengembalikan
-    // Alatpancing), lalu diteruskan ke method prosesTransaksi() yang parameternya
-    // juga bertipe Superclass -> mendemonstrasikan UPCASTING pada parameter method.
     static void hitungSewa(Penyewaanmanager manager) {
         System.out.println("\n--- SIMULASI TRANSAKSI / HITUNG BIAYA SEWA ---");
         String kode = bacaString("Kode alat: ");
@@ -146,9 +135,6 @@ public class Main {
 
         String jawab = bacaString("Apakah member? (y/n): ");
 
-        // Method Overloading (Compile-Time Polymorphism): kompiler menentukan
-        // versi prosesTransaksi() yang dipanggil berdasarkan jumlah argumen
-        // yang diberikan saat kompilasi, BUKAN saat program berjalan.
         if (jawab.equalsIgnoreCase("y")) {
             prosesTransaksi(alat, hari, true);
         } else {
@@ -156,27 +142,16 @@ public class Main {
         }
     }
 
-    // ===== Method Overload 1: tanpa status member =====
-    // Parameter "Alatpancing alat" bertipe Superclass, sehingga method ini bisa
-    // menerima objek dari SELURUH subclass (Joran, Reel, Aksesoris, Umpan) -> upcasting.
     static void prosesTransaksi(Alatpancing alat, int hari) {
-        // Runtime Polymorphism / Dynamic Binding: baris di bawah ini memanggil
-        // hitungBiayaSewa() dan tampilkanInfo() milik SUPERCLASS secara sintaks,
-        // namun JVM akan mengeksekusi versi hasil @Override sesuai wujud objek
-        // asli (Joran/Reel/Aksesoris/Umpan) yang baru diketahui saat program berjalan.
         double total = alat.hitungBiayaSewa(hari);
         cetakStruk(alat, hari, total, false);
     }
 
-    // ===== Method Overload 2: dengan status member (Compile-Time Polymorphism) =====
-    // Nama method sama (prosesTransaksi), jumlah parameter berbeda (3 vs 2) ->
-    // dipilih oleh kompiler saat compile-time (static binding), bukan saat runtime.
     static void prosesTransaksi(Alatpancing alat, int hari, boolean member) {
-        double total = alat.hitungBiayaSewa(hari, member); // dynamic binding tetap berlaku di sini
+        double total = alat.hitungBiayaSewa(hari, member); 
         cetakStruk(alat, hari, total, member);
     }
 
-    // Helper cetak struk; alat.tampilkanInfo() juga dieksekusi secara polimorfis
     static void cetakStruk(Alatpancing alat, int hari, double total, boolean member) {
         System.out.println("\n===== STRUK TRANSAKSI =====");
         alat.tampilkanInfo(); // dynamic binding: method hasil override yang dijalankan
@@ -189,9 +164,6 @@ public class Main {
     public static void main(String[] args) {
         Penyewaanmanager manager = new Penyewaanmanager();
 
-        // Data awal (5 objek, mencakup seluruh variasi subclass: Joran, Reel,
-        // Aksesoris, Umpan). Array penyimpanan di Penyewaanmanager bertipe
-        // Superclass (Alatpancing[]), sehingga mampu menampung keempatnya sekaligus.
         manager.tambahAlat(new Joran("JR01", "Daiwa Crossfire", 25000, 5, 240, "Carbon"));
         manager.tambahAlat(new Joran("JR02", "Shimano FX", 30000, 3, 270, "Fiberglass"));
         manager.tambahAlat(new Reel("RL01", "Shimano Sienna 2500", 20000, 4, "Spinning", 5.2));
