@@ -9,7 +9,6 @@ package com.mycompany.sistempenyewaanalatpancing;
  * @author Hype AMD
  */
 public class Penyewaanmanager {
-
     private Alatpancing[] daftarAlat = new Alatpancing[50];
     private int jumlah = 0;
 
@@ -51,6 +50,19 @@ public class Penyewaanmanager {
         System.out.println("=========================================================================");
     }
 
+    private void cetakKemampuan(Alatpancing alat) {
+        String kemampuan = "";
+        if (alat instanceof Dapatdisewa) {
+            kemampuan = kemampuan + "[Dapat Disewa] ";
+        }
+        if (alat instanceof Dapatdinilai) {
+            kemampuan = kemampuan + "[Dapat Dinilai] ";
+        }
+        if (kemampuan.equals("")) {
+            kemampuan = "-";
+        }
+        System.out.println("         -> Kemampuan: " + kemampuan);
+    }
 
     public void tampilkanSemua() {
         if (jumlah == 0) {
@@ -60,6 +72,7 @@ public class Penyewaanmanager {
         cetakHeader();
         for (int i = 0; i < jumlah; i++) {
             daftarAlat[i].tampilkanInfo();
+            cetakKemampuan(daftarAlat[i]);
         }
         System.out.println("=========================================================================");
         System.out.println("Total alat tercatat (objek dibuat): " + Alatpancing.getTotalAlat());

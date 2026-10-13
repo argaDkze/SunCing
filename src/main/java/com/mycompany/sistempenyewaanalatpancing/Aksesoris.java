@@ -8,29 +8,26 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
-// SUBCLASS 3
-public class Aksesoris extends Alatpancing {
-
+public class Aksesoris extends Alatpancing implements Dapatdisewa {
     private String jenisAksesoris;
     private int jumlahItem;
-
-    public Aksesoris(String kode, String nama, double hargaPerHari, int stok,
-                     String jenisAksesoris, int jumlahItem) {
+ 
+    public Aksesoris(String kode, String nama, double hargaPerHari, int stok, String jenisAksesoris, int jumlahItem) {
         super(kode, nama, hargaPerHari, stok);
         this.jenisAksesoris = "-";
         this.jumlahItem = 0;
         setJenisAksesoris(jenisAksesoris);
         setJumlahItem(jumlahItem);
     }
-
+ 
     public String getJenisAksesoris() {
         return jenisAksesoris;
     }
-
+ 
     public int getJumlahItem() {
         return jumlahItem;
     }
-
+ 
     public void setJenisAksesoris(String jenisAksesoris) {
         if (jenisAksesoris == null || jenisAksesoris.trim().equals("")) {
             System.out.println("Jenis aksesoris tidak boleh kosong!");
@@ -38,7 +35,7 @@ public class Aksesoris extends Alatpancing {
             this.jenisAksesoris = jenisAksesoris.trim();
         }
     }
-
+ 
     public void setJumlahItem(int jumlahItem) {
         if (jumlahItem <= 0) {
             System.out.println("Jumlah item harus lebih dari 0!");
@@ -46,12 +43,12 @@ public class Aksesoris extends Alatpancing {
             this.jumlahItem = jumlahItem;
         }
     }
-
+ 
     @Override
     public String getJenis() {
         return "Aksesoris";
     }
-
+ 
     @Override
     public double hitungBiayaSewa(int hari) {
         double total = super.hitungBiayaSewa(hari);
@@ -60,7 +57,27 @@ public class Aksesoris extends Alatpancing {
         }
         return total;
     }
-
+ 
+    @Override
+    public double hitungDendaKeterlambatan(int hariTerlambat) {
+        if (hariTerlambat <= 0) {
+            return 0;
+        }
+        return getHargaPerHari() * 0.25 * hariTerlambat;
+    }
+ 
+    @Override
+    public void prosesSewaFisik() {
+        if (getStok() <= 0) {
+            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
+        } else {
+            setStok(getStok() - 1);
+            System.out.println("Aksesoris " + getNama() + " dihitung ulang isinya (" + jumlahItem
+                    + " item), lalu diserahkan ke penyewa.");
+            System.out.println("Sisa stok: " + getStok());
+        }
+    }
+ 
     @Override
     public void tampilkanInfo() {
         super.tampilkanInfo();

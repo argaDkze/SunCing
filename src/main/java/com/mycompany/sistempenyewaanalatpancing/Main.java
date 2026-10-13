@@ -9,11 +9,7 @@ import java.util.*;
  * @author Hype AMD
  */
 
-import java.util.*;
-
-
 public class Main {
-
     static Scanner input = new Scanner(System.in);
 
     static int bacaInt(String pesan) {
@@ -148,7 +144,7 @@ public class Main {
     }
 
     static void prosesTransaksi(Alatpancing alat, int hari, boolean member) {
-        double total = alat.hitungBiayaSewa(hari, member); 
+        double total = alat.hitungBiayaSewa(hari, member);
         cetakStruk(alat, hari, total, member);
     }
 
@@ -159,6 +155,63 @@ public class Main {
         System.out.println("Status      : " + (member ? "Member (dapat diskon)" : "Non-member"));
         System.out.printf("Total biaya : Rp%.0f%n", total);
         System.out.println("============================");
+    }
+
+    static void aksiKhusus(Penyewaanmanager manager) {
+        System.out.println("\n--- AKSI KHUSUS (INTERFACE) ---");
+        String kode = bacaString("Kode alat: ");
+        Alatpancing alat = manager.cariByKode(kode);
+
+        if (alat == null) {
+            System.out.println("Alat tidak ditemukan!");
+            return;
+        }
+
+        System.out.println("Alat terpilih: " + alat.getNama() + " (" + alat.getJenis() + ")");
+        System.out.println("1. Proses sewa fisik (serah terima alat)");
+        System.out.println("2. Beri rating");
+        int pilih = bacaInt("Pilih aksi: ");
+
+        if (pilih == 1) {
+            if (alat instanceof Dapatdisewa) {
+                Dapatdisewa disewa = (Dapatdisewa) alat;
+                disewa.prosesSewaFisik();
+            } else {
+                System.out.println(alat.getJenis() + " tidak bisa disewa secara fisik (tidak implements Dapatdisewa).");
+            }
+        } else if (pilih == 2) {
+            if (alat instanceof Dapatdinilai) {
+                Dapatdinilai dinilai = (Dapatdinilai) alat;
+                int rating = bacaInt("Rating (" + Dapatdinilai.RATING_MIN + "-" + Dapatdinilai.RATING_MAX + "): ");
+                dinilai.beriRating(rating);
+            } else {
+                System.out.println(alat.getJenis() + " tidak bisa diberi rating (tidak implements Dapatdinilai).");
+            }
+        } else {
+            System.out.println("Pilihan tidak valid!");
+        }
+    }
+
+    static void hitungDenda(Penyewaanmanager manager) {
+        System.out.println("\n--- HITUNG DENDA KETERLAMBATAN ---");
+        String kode = bacaString("Kode alat: ");
+        Alatpancing alat = manager.cariByKode(kode);
+
+        if (alat == null) {
+            System.out.println("Alat tidak ditemukan!");
+            return;
+        }
+
+        int hariTerlambat = bacaInt("Terlambat berapa hari: ");
+        if (hariTerlambat < 0) {
+            System.out.println("Jumlah hari tidak boleh negatif!");
+            return;
+        }
+
+        double denda = alat.hitungDendaKeterlambatan(hariTerlambat);
+        System.out.println("Alat         : " + alat.getNama() + " (" + alat.getJenis() + ")");
+        System.out.println("Terlambat    : " + hariTerlambat + " hari");
+        System.out.printf("Total denda  : Rp%.0f%n", denda);
     }
 
     public static void main(String[] args) {
@@ -180,7 +233,9 @@ public class Main {
             System.out.println("2. Tampilkan Seluruh Data");
             System.out.println("3. Cari Alat");
             System.out.println("4. Simulasi Transaksi / Hitung Biaya Sewa");
-            System.out.println("5. Keluar");
+            System.out.println("5. Aksi Khusus (Sewa Fisik / Beri Rating)");
+            System.out.println("6. Hitung Denda Keterlambatan");
+            System.out.println("7. Keluar");
             System.out.println("-------------------------------------");
             pilihan = bacaInt("Pilih menu: ");
 
@@ -199,12 +254,18 @@ public class Main {
                     hitungSewa(manager);
                     break;
                 case 5:
+                    aksiKhusus(manager);
+                    break;
+                case 6:
+                    hitungDenda(manager);
+                    break;
+                case 7:
                     System.out.println("Terima kasih, sampai jumpa!");
                     break;
                 default:
                     System.out.println("Menu tidak valid, coba lagi!");
             }
-        } while (pilihan != 5);
+        } while (pilihan != 7);
 
         input.close();
     }
