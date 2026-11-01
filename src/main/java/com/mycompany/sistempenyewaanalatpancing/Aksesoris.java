@@ -9,46 +9,46 @@ package com.mycompany.sistempenyewaanalatpancing;
  * @author Hype AMD
  */
 public class Aksesoris extends Alatpancing implements Dapatdisewa {
+
     private String jenisAksesoris;
     private int jumlahItem;
- 
-    public Aksesoris(String kode, String nama, double hargaPerHari, int stok, String jenisAksesoris, int jumlahItem) {
+
+    public Aksesoris(String kode, String nama, double hargaPerHari, int stok,
+                     String jenisAksesoris, int jumlahItem) throws DataTidakValidException {
         super(kode, nama, hargaPerHari, stok);
         this.jenisAksesoris = "-";
         this.jumlahItem = 0;
         setJenisAksesoris(jenisAksesoris);
         setJumlahItem(jumlahItem);
     }
- 
+
     public String getJenisAksesoris() {
         return jenisAksesoris;
     }
- 
+
     public int getJumlahItem() {
         return jumlahItem;
     }
- 
-    public void setJenisAksesoris(String jenisAksesoris) {
+
+    public void setJenisAksesoris(String jenisAksesoris) throws DataTidakValidException {
         if (jenisAksesoris == null || jenisAksesoris.trim().equals("")) {
-            System.out.println("Jenis aksesoris tidak boleh kosong!");
-        } else {
-            this.jenisAksesoris = jenisAksesoris.trim();
+            throw new DataTidakValidException("Jenis aksesoris tidak boleh kosong!");
         }
+        this.jenisAksesoris = jenisAksesoris.trim();
     }
- 
-    public void setJumlahItem(int jumlahItem) {
+
+    public void setJumlahItem(int jumlahItem) throws DataTidakValidException {
         if (jumlahItem <= 0) {
-            System.out.println("Jumlah item harus lebih dari 0!");
-        } else {
-            this.jumlahItem = jumlahItem;
+            throw new DataTidakValidException("Jumlah item harus lebih dari 0!");
         }
+        this.jumlahItem = jumlahItem;
     }
- 
+
     @Override
     public String getJenis() {
         return "Aksesoris";
     }
- 
+
     @Override
     public double hitungBiayaSewa(int hari) {
         double total = super.hitungBiayaSewa(hari);
@@ -57,27 +57,23 @@ public class Aksesoris extends Alatpancing implements Dapatdisewa {
         }
         return total;
     }
- 
+
     @Override
     public double hitungDendaKeterlambatan(int hariTerlambat) {
-        if (hariTerlambat <= 0) {
-            return 0;
-        }
         return getHargaPerHari() * 0.25 * hariTerlambat;
     }
- 
+
     @Override
     public void prosesSewaFisik() {
-        if (getStok() <= 0) {
-            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
-        } else {
-            setStok(getStok() - 1);
+        if (kurangiStok()) {
             System.out.println("Aksesoris " + getNama() + " dihitung ulang isinya (" + jumlahItem
                     + " item), lalu diserahkan ke penyewa.");
             System.out.println("Sisa stok: " + getStok());
+        } else {
+            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
         }
     }
- 
+
     @Override
     public void tampilkanInfo() {
         super.tampilkanInfo();
