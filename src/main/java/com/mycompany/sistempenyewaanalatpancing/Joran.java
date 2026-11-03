@@ -10,18 +10,15 @@ package com.mycompany.sistempenyewaanalatpancing;
  */
 // SUBCLASS 1
 public class Joran extends Alatpancing implements Dapatdisewa, Dapatdinilai {
+
     private int panjangCm;
     private String bahan;
     private int totalRating;
     private int jumlahRating;
 
     public Joran(String kode, String nama, double hargaPerHari, int stok,
-                 int panjangCm, String bahan) {
+                 int panjangCm, String bahan) throws DataTidakValidException {
         super(kode, nama, hargaPerHari, stok);
-        this.panjangCm = 0;
-        this.bahan = "-";
-        this.totalRating = 0;
-        this.jumlahRating = 0;
         setPanjangCm(panjangCm);
         setBahan(bahan);
     }
@@ -34,20 +31,18 @@ public class Joran extends Alatpancing implements Dapatdisewa, Dapatdinilai {
         return bahan;
     }
 
-    public void setPanjangCm(int panjangCm) {
+    public void setPanjangCm(int panjangCm) throws DataTidakValidException {
         if (panjangCm < 100 || panjangCm > 1000) {
-            System.out.println("Panjang joran harus 100 - 1000 cm!");
-        } else {
-            this.panjangCm = panjangCm;
+            throw new DataTidakValidException("Panjang joran harus 100 - 1000 cm!");
         }
+        this.panjangCm = panjangCm;
     }
 
-    public void setBahan(String bahan) {
+    public void setBahan(String bahan) throws DataTidakValidException {
         if (bahan == null || bahan.trim().equals("")) {
-            System.out.println("Bahan joran tidak boleh kosong!");
-        } else {
-            this.bahan = bahan.trim();
+            throw new DataTidakValidException("Bahan joran tidak boleh kosong!");
         }
+        this.bahan = bahan.trim();
     }
 
     @Override
@@ -62,32 +57,27 @@ public class Joran extends Alatpancing implements Dapatdisewa, Dapatdinilai {
 
     @Override
     public double hitungDendaKeterlambatan(int hariTerlambat) {
-        if (hariTerlambat <= 0) {
-            return 0;
-        }
         return getHargaPerHari() * 0.5 * hariTerlambat;
     }
 
     @Override
     public void prosesSewaFisik() {
-        if (getStok() <= 0) {
-            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
-        } else {
-            setStok(getStok() - 1);
+        if (kurangiStok()) {
             System.out.println("Joran " + getNama() + " dicek (ruas dan guide), lalu diserahkan ke penyewa.");
             System.out.println("Sisa stok: " + getStok());
+        } else {
+            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
         }
     }
 
     @Override
-    public void beriRating(int rating) {
+    public void beriRating(int rating) throws DataTidakValidException {
         if (rating < RATING_MIN || rating > RATING_MAX) {
-            System.out.println("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
-        } else {
-            totalRating = totalRating + rating;
-            jumlahRating++;
-            System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
+            throw new DataTidakValidException("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
         }
+        totalRating = totalRating + rating;
+        jumlahRating++;
+        System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
     }
 
     @Override

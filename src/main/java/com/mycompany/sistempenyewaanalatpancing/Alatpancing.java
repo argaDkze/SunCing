@@ -8,9 +8,8 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
-// SUPERCLASS
-// SUPERCLASS (induk)
 public abstract class Alatpancing {
+
     private String kode;
     private String nama;
     private double hargaPerHari;
@@ -18,16 +17,11 @@ public abstract class Alatpancing {
 
     private static int totalAlat = 0;
 
-    public Alatpancing(String kode, String nama, double hargaPerHari, int stok) {
-        this.kode = "-";
-        this.nama = "-";
-        this.hargaPerHari = 0;
-        this.stok = 0;
+    public Alatpancing(String kode, String nama, double hargaPerHari, int stok) throws DataTidakValidException {
         setKode(kode);
         setNama(nama);
         setHargaPerHari(hargaPerHari);
         setStok(stok);
-        totalAlat++;
     }
 
     public String getKode() {
@@ -46,36 +40,44 @@ public abstract class Alatpancing {
         return stok;
     }
 
-    public void setKode(String kode) {
+    public void setKode(String kode) throws DataTidakValidException {
         if (kode == null || kode.trim().equals("")) {
-            System.out.println("Kode tidak boleh kosong!");
-        } else {
-            this.kode = kode.trim().toUpperCase();
+            throw new DataTidakValidException("Kode tidak boleh kosong!");
         }
+        this.kode = kode.trim().toUpperCase();
     }
 
-    public void setNama(String nama) {
+    public void setNama(String nama) throws DataTidakValidException {
         if (nama == null || nama.trim().equals("")) {
-            System.out.println("Nama alat tidak boleh kosong!");
-        } else {
-            this.nama = nama.trim();
+            throw new DataTidakValidException("Nama alat tidak boleh kosong!");
         }
+        this.nama = nama.trim();
     }
 
-    public void setHargaPerHari(double hargaPerHari) {
+    public void setHargaPerHari(double hargaPerHari) throws DataTidakValidException {
         if (hargaPerHari <= 0) {
-            System.out.println("Harga sewa harus lebih dari 0!");
-        } else {
-            this.hargaPerHari = hargaPerHari;
+            throw new DataTidakValidException("Harga sewa harus lebih dari 0!");
         }
+        this.hargaPerHari = hargaPerHari;
     }
 
-    public void setStok(int stok) {
+    public void setStok(int stok) throws DataTidakValidException {
         if (stok < 0) {
-            System.out.println("Stok tidak boleh negatif!");
-        } else {
-            this.stok = stok;
+            throw new DataTidakValidException("Stok tidak boleh negatif!");
         }
+        this.stok = stok;
+    }
+
+    public boolean kurangiStok() {
+        if (stok > 0) {
+            stok--;
+            return true;
+        }
+        return false;
+    }
+
+    public static void catatAlatBaru() {
+        totalAlat++;
     }
 
     public static int getTotalAlat() {

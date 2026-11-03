@@ -9,5 +9,6 @@ package com.mycompany.sistempenyewaanalatpancing;
  * @author Hype AMD
  */
 public interface Dapatdisewa {
+
     void prosesSewaFisik();
 }

@@ -10,18 +10,15 @@ package com.mycompany.sistempenyewaanalatpancing;
  */
 // SUBCLASS 2
 public class Reel extends Alatpancing implements Dapatdisewa, Dapatdinilai {
+
     private String tipeReel;
     private double gearRatio;
     private int totalRating;
     private int jumlahRating;
 
     public Reel(String kode, String nama, double hargaPerHari, int stok,
-                String tipeReel, double gearRatio) {
+                String tipeReel, double gearRatio) throws DataTidakValidException {
         super(kode, nama, hargaPerHari, stok);
-        this.tipeReel = "-";
-        this.gearRatio = 0;
-        this.totalRating = 0;
-        this.jumlahRating = 0;
         setTipeReel(tipeReel);
         setGearRatio(gearRatio);
     }
@@ -34,20 +31,18 @@ public class Reel extends Alatpancing implements Dapatdisewa, Dapatdinilai {
         return gearRatio;
     }
 
-    public void setTipeReel(String tipeReel) {
+    public void setTipeReel(String tipeReel) throws DataTidakValidException {
         if (tipeReel == null || tipeReel.trim().equals("")) {
-            System.out.println("Tipe reel tidak boleh kosong!");
-        } else {
-            this.tipeReel = tipeReel.trim();
+            throw new DataTidakValidException("Tipe reel tidak boleh kosong!");
         }
+        this.tipeReel = tipeReel.trim();
     }
 
-    public void setGearRatio(double gearRatio) {
+    public void setGearRatio(double gearRatio) throws DataTidakValidException {
         if (gearRatio < 3 || gearRatio > 10) {
-            System.out.println("Gear ratio harus antara 3 - 10!");
-        } else {
-            this.gearRatio = gearRatio;
+            throw new DataTidakValidException("Gear ratio harus antara 3 - 10!");
         }
+        this.gearRatio = gearRatio;
     }
 
     @Override
@@ -62,32 +57,27 @@ public class Reel extends Alatpancing implements Dapatdisewa, Dapatdinilai {
 
     @Override
     public double hitungDendaKeterlambatan(int hariTerlambat) {
-        if (hariTerlambat <= 0) {
-            return 0;
-        }
         return getHargaPerHari() * 0.4 * hariTerlambat;
     }
 
     @Override
     public void prosesSewaFisik() {
-        if (getStok() <= 0) {
-            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
-        } else {
-            setStok(getStok() - 1);
+        if (kurangiStok()) {
             System.out.println("Reel " + getNama() + " dicek (drag dan putaran handle), lalu diserahkan ke penyewa.");
             System.out.println("Sisa stok: " + getStok());
+        } else {
+            System.out.println("Stok " + getNama() + " habis, tidak bisa disewa!");
         }
     }
 
     @Override
-    public void beriRating(int rating) {
+    public void beriRating(int rating) throws DataTidakValidException {
         if (rating < RATING_MIN || rating > RATING_MAX) {
-            System.out.println("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
-        } else {
-            totalRating = totalRating + rating;
-            jumlahRating++;
-            System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
+            throw new DataTidakValidException("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
         }
+        totalRating = totalRating + rating;
+        jumlahRating++;
+        System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
     }
 
     @Override

@@ -9,10 +9,11 @@ package com.mycompany.sistempenyewaanalatpancing;
  * @author Hype AMD
  */
 public interface Dapatdinilai {
+
     int RATING_MIN = 1;
     int RATING_MAX = 5;
 
-    void beriRating(int rating);
+    void beriRating(int rating) throws DataTidakValidException;
 
     double getRataRating();
 }

@@ -10,18 +10,15 @@ package com.mycompany.sistempenyewaanalatpancing;
  */
 // SUBCLASS 4 
 public class Umpan extends Alatpancing implements Dapatdinilai {
+
     private String jenisUmpan;
     private int beratGram;
     private int totalRating;
     private int jumlahRating;
 
     public Umpan(String kode, String nama, double hargaPerHari, int stok,
-                 String jenisUmpan, int beratGram) {
+                 String jenisUmpan, int beratGram) throws DataTidakValidException {
         super(kode, nama, hargaPerHari, stok);
-        this.jenisUmpan = "-";
-        this.beratGram = 0;
-        this.totalRating = 0;
-        this.jumlahRating = 0;
         setJenisUmpan(jenisUmpan);
         setBeratGram(beratGram);
     }
@@ -34,20 +31,18 @@ public class Umpan extends Alatpancing implements Dapatdinilai {
         return beratGram;
     }
 
-    public void setJenisUmpan(String jenisUmpan) {
+    public void setJenisUmpan(String jenisUmpan) throws DataTidakValidException {
         if (jenisUmpan == null || jenisUmpan.trim().equals("")) {
-            System.out.println("Jenis umpan tidak boleh kosong!");
-        } else {
-            this.jenisUmpan = jenisUmpan.trim();
+            throw new DataTidakValidException("Jenis umpan tidak boleh kosong!");
         }
+        this.jenisUmpan = jenisUmpan.trim();
     }
 
-    public void setBeratGram(int beratGram) {
+    public void setBeratGram(int beratGram) throws DataTidakValidException {
         if (beratGram <= 0) {
-            System.out.println("Berat umpan harus lebih dari 0!");
-        } else {
-            this.beratGram = beratGram;
+            throw new DataTidakValidException("Berat umpan harus lebih dari 0!");
         }
+        this.beratGram = beratGram;
     }
 
     @Override
@@ -70,14 +65,13 @@ public class Umpan extends Alatpancing implements Dapatdinilai {
     }
 
     @Override
-    public void beriRating(int rating) {
+    public void beriRating(int rating) throws DataTidakValidException {
         if (rating < RATING_MIN || rating > RATING_MAX) {
-            System.out.println("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
-        } else {
-            totalRating = totalRating + rating;
-            jumlahRating++;
-            System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
+            throw new DataTidakValidException("Rating harus antara " + RATING_MIN + " - " + RATING_MAX + "!");
         }
+        totalRating = totalRating + rating;
+        jumlahRating++;
+        System.out.println("Rating " + rating + " untuk " + getNama() + " tersimpan.");
     }
 
     @Override

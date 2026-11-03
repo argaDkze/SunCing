@@ -4,49 +4,81 @@
  */
 package com.mycompany.sistempenyewaanalatpancing;
 
-/**
- *
- * @author Hype AMD
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Penyewaanmanager {
-    private Alatpancing[] daftarAlat = new Alatpancing[50];
-    private int jumlah = 0;
 
-    public int getJumlah() {
-        return jumlah;
-    }
+    private ArrayList<Alatpancing> daftarAlat = new ArrayList<>();
+    private HashMap<String, Anggota> dataAnggota = new HashMap<>();
 
-    public boolean tambahAlat(Alatpancing alat) {
-        if (jumlah >= daftarAlat.length) {
-            System.out.println("Data penuh, tidak bisa menambah alat lagi!");
-            return false;
-        }
-        daftarAlat[jumlah] = alat;
-        jumlah++;
-        return true;
+    public void tambahAlat(Alatpancing alat) {
+        daftarAlat.add(alat);
+        Alatpancing.catatAlatBaru();
     }
 
     public boolean kodeSudahAda(String kode) {
-        for (int i = 0; i < jumlah; i++) {
-            if (daftarAlat[i].getKode().equalsIgnoreCase(kode)) {
+        for (int i = 0; i < daftarAlat.size(); i++) {
+            if (daftarAlat.get(i).getKode().equalsIgnoreCase(kode.trim())) {
                 return true;
             }
         }
         return false;
     }
 
-    public Alatpancing cariByKode(String kode) {
-        for (int i = 0; i < jumlah; i++) {
-            if (daftarAlat[i].getKode().equalsIgnoreCase(kode)) {
-                return daftarAlat[i];
+    public Alatpancing cariByKode(String kode) throws AlatTidakDitemukanException {
+        for (int i = 0; i < daftarAlat.size(); i++) {
+            if (daftarAlat.get(i).getKode().equalsIgnoreCase(kode.trim())) {
+                return daftarAlat.get(i);
             }
         }
-        return null;
+        throw new AlatTidakDitemukanException("Alat dengan kode \"" + kode.trim() + "\" tidak ditemukan!");
     }
 
-    private void cetakHeader() {
+    public ArrayList<Alatpancing> cariAlat(String kataKunci)
+            throws AlatTidakDitemukanException, DataTidakValidException {
+        if (kataKunci == null || kataKunci.trim().equals("")) {
+            throw new DataTidakValidException("Kata kunci pencarian tidak boleh kosong!");
+        }
+
+        String kunci = kataKunci.trim().toLowerCase();
+        ArrayList<Alatpancing> hasil = new ArrayList<>();
+
+        for (int i = 0; i < daftarAlat.size(); i++) {
+            Alatpancing alat = daftarAlat.get(i);
+            boolean cocokKode = alat.getKode().toLowerCase().contains(kunci);
+            boolean cocokNama = alat.getNama().toLowerCase().contains(kunci);
+            boolean cocokJenis = alat.getJenis().toLowerCase().contains(kunci);
+            if (cocokKode || cocokNama || cocokJenis) {
+                hasil.add(alat);
+            }
+        }
+
+        if (hasil.isEmpty()) {
+            throw new AlatTidakDitemukanException("Tidak ada alat dengan kata kunci \"" + kataKunci.trim() + "\"!");
+        }
+        return hasil;
+    }
+
+    public void tampilkanSemua() {
+        if (daftarAlat.isEmpty()) {
+            System.out.println("Belum ada data alat pancing.");
+            return;
+        }
+        tampilkanDaftar(daftarAlat);
+        System.out.println("Jumlah alat di daftar     : " + daftarAlat.size());
+        System.out.println("Total alat tercatat       : " + Alatpancing.getTotalAlat());
+    }
+
+    public void tampilkanDaftar(ArrayList<Alatpancing> daftar) {
         System.out.println("=========================================================================");
         System.out.printf("%-8s %-12s %-24s %-12s %-5s%n", "KODE", "JENIS", "NAMA", "HARGA/HARI", "STOK");
+        System.out.println("=========================================================================");
+        for (int i = 0; i < daftar.size(); i++) {
+            Alatpancing alat = daftar.get(i);
+            alat.tampilkanInfo();
+            cetakKemampuan(alat);
+        }
         System.out.println("=========================================================================");
     }
 
@@ -58,72 +90,36 @@ public class Penyewaanmanager {
         if (alat instanceof Dapatdinilai) {
             kemampuan = kemampuan + "[Dapat Dinilai] ";
         }
-        if (kemampuan.equals("")) {
-            kemampuan = "-";
-        }
         System.out.println("         -> Kemampuan: " + kemampuan);
     }
 
-    public void tampilkanSemua() {
-        if (jumlah == 0) {
-            System.out.println("Belum ada data alat pancing.");
+    public void tambahAnggota(Anggota anggota) throws DataTidakValidException {
+        if (dataAnggota.containsKey(anggota.getId())) {
+            throw new DataTidakValidException("ID anggota " + anggota.getId() + " sudah terdaftar!");
+        }
+        dataAnggota.put(anggota.getId(), anggota);
+    }
+
+    public boolean anggotaAda(String id) {
+        return dataAnggota.containsKey(id.trim().toUpperCase());
+    }
+
+    public Anggota getAnggota(String id) {
+        return dataAnggota.get(id.trim().toUpperCase());
+    }
+
+    public void tampilkanSemuaAnggota() {
+        if (dataAnggota.isEmpty()) {
+            System.out.println("Belum ada data anggota.");
             return;
         }
-        cetakHeader();
-        for (int i = 0; i < jumlah; i++) {
-            daftarAlat[i].tampilkanInfo();
-            cetakKemampuan(daftarAlat[i]);
+        System.out.println("Jumlah anggota: " + dataAnggota.size());
+        System.out.println("=================================================");
+        System.out.printf("%-8s %-24s %-15s%n", "ID", "NAMA", "NO HP");
+        System.out.println("=================================================");
+        for (String id : dataAnggota.keySet()) {
+            dataAnggota.get(id).tampilkanInfo();
         }
-        System.out.println("=========================================================================");
-        System.out.println("Total alat tercatat (objek dibuat): " + Alatpancing.getTotalAlat());
-    }
-
-    public void cariAlat(String kataKunci) {
-        boolean ketemu = false;
-        for (int i = 0; i < jumlah; i++) {
-            if (daftarAlat[i].getNama().toLowerCase().contains(kataKunci.toLowerCase())) {
-                if (!ketemu) {
-                    cetakHeader();
-                }
-                daftarAlat[i].tampilkanInfo();
-                ketemu = true;
-            }
-        }
-        if (!ketemu) {
-            System.out.println("Alat dengan nama \"" + kataKunci + "\" tidak ditemukan.");
-        }
-    }
-
-    public void cariAlat(double hargaMax) {
-        boolean ketemu = false;
-        for (int i = 0; i < jumlah; i++) {
-            if (daftarAlat[i].getHargaPerHari() <= hargaMax) {
-                if (!ketemu) {
-                    cetakHeader();
-                }
-                daftarAlat[i].tampilkanInfo();
-                ketemu = true;
-            }
-        }
-        if (!ketemu) {
-            System.out.println("Tidak ada alat dengan harga sewa <= Rp" + hargaMax);
-        }
-    }
-
-    public void cariAlat(String jenis, double hargaMax) {
-        boolean ketemu = false;
-        for (int i = 0; i < jumlah; i++) {
-            if (daftarAlat[i].getJenis().equalsIgnoreCase(jenis)
-                    && daftarAlat[i].getHargaPerHari() <= hargaMax) {
-                if (!ketemu) {
-                    cetakHeader();
-                }
-                daftarAlat[i].tampilkanInfo();
-                ketemu = true;
-            }
-        }
-        if (!ketemu) {
-            System.out.println("Tidak ada " + jenis + " dengan harga sewa <= Rp" + hargaMax);
-        }
+        System.out.println("=================================================");
     }
 }
