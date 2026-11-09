@@ -28,23 +28,23 @@ public class Main {
         return input.nextLine();
     }
 
-    static void isiDataAwal(Penyewaanmanager manager) {
+    static void isiDataAwal(TokoPancing toko) {
         try {
-            manager.tambahAlat(new Joran("JR01", "Daiwa Crossfire", 25000, 5, 240, "Carbon"));
-            manager.tambahAlat(new Joran("JR02", "Shimano FX", 30000, 3, 270, "Fiberglass"));
-            manager.tambahAlat(new Reel("RL01", "Shimano Sienna 2500", 20000, 4, "Spinning", 5.2));
-            manager.tambahAlat(new Aksesoris("AK01", "Paket Tackle Box", 10000, 10, "Tackle Box", 25));
-            manager.tambahAlat(new Umpan("UM01", "Umpan Jangkrik Premium", 8000, 20, "Jangkrik", 150));
+            toko.tambahAlat(new Joran("JR01", "Daiwa Crossfire", 25000, 5, 240, "Carbon"));
+            toko.tambahAlat(new Joran("JR02", "Shimano FX", 30000, 3, 270, "Fiberglass"));
+            toko.tambahAlat(new Reel("RL01", "Shimano Sienna 2500", 20000, 4, "Spinning", 5.2));
+            toko.tambahAlat(new Aksesoris("AK01", "Paket Tackle Box", 10000, 10, "Tackle Box", 25));
+            toko.tambahAlat(new Umpan("UM01", "Umpan Jangkrik Premium", 8000, 20, "Jangkrik", 150));
 
-            manager.tambahAnggota(new Anggota("AG01", "Budi Santoso", "081234567890"));
-            manager.tambahAnggota(new Anggota("AG02", "Siti Aminah", "081345678901"));
-            manager.tambahAnggota(new Anggota("AG03", "Rizki Pratama", "082156789012"));
+            toko.tambahAnggota(new Anggota("AG01", "Budi Santoso", "081234567890"));
+            toko.tambahAnggota(new Anggota("AG02", "Siti Aminah", "081345678901"));
+            toko.tambahAnggota(new Anggota("AG03", "Rizki Pratama", "082156789012"));
         } catch (DataTidakValidException e) {
             System.out.println("Gagal mengisi data awal: " + e.getMessage());
         }
     }
 
-    static void tambahData(Penyewaanmanager manager) throws DataTidakValidException {
+    static void tambahData(TokoPancing toko) throws DataTidakValidException {
         System.out.println("\n--- TAMBAH ALAT PANCING ---");
         System.out.println("1. Joran");
         System.out.println("2. Reel");
@@ -57,7 +57,7 @@ public class Main {
         }
 
         String kode = bacaString("Kode alat        : ");
-        if (manager.kodeSudahAda(kode)) {
+        if (toko.kodeSudahAda(kode)) {
             throw new DataTidakValidException("Kode " + kode.trim().toUpperCase() + " sudah dipakai!");
         }
         String nama = bacaString("Nama alat        : ");
@@ -89,18 +89,18 @@ public class Main {
                 break;
         }
 
-        manager.tambahAlat(alat);
+        toko.tambahAlat(alat);
         System.out.println("Data berhasil ditambahkan!");
     }
 
-    static void cariAlat(Penyewaanmanager manager) throws DataTidakValidException {
+    static void cariAlat(TokoPancing toko) throws DataTidakValidException {
         System.out.println("\n--- CARI ALAT PANCING ---");
         String kataKunci = bacaString("Kata kunci (kode/nama/jenis): ");
 
         try {
-            ArrayList<Alatpancing> hasil = manager.cariAlat(kataKunci);
+            ArrayList<Alatpancing> hasil = toko.cariAlat(kataKunci);
             System.out.println("Ditemukan " + hasil.size() + " alat:");
-            manager.tampilkanDaftar(hasil);
+            toko.tampilkanDaftar(hasil);
         } catch (AlatTidakDitemukanException e) {
             System.out.println("Pencarian gagal: " + e.getMessage());
         } finally {
@@ -108,7 +108,7 @@ public class Main {
         }
     }
 
-    static void kelolaAnggota(Penyewaanmanager manager) throws DataTidakValidException {
+    static void kelolaAnggota(TokoPancing toko) throws DataTidakValidException {
         System.out.println("\n--- KELOLA ANGGOTA ---");
         System.out.println("1. Tambah anggota baru");
         System.out.println("2. Cari anggota");
@@ -119,77 +119,47 @@ public class Main {
             String id = bacaString("ID anggota : ");
             String nama = bacaString("Nama       : ");
             String noHp = bacaString("No HP      : ");
-            Anggota anggota = new Anggota(id, nama, noHp);
-            manager.tambahAnggota(anggota);
+            toko.tambahAnggota(new Anggota(id, nama, noHp));
             System.out.println("Anggota berhasil ditambahkan!");
         } else if (pilih == 2) {
             String id = bacaString("ID anggota yang dicari: ");
-            if (manager.anggotaAda(id)) {
-                Anggota anggota = manager.getAnggota(id);
-                System.out.println("Anggota ditemukan:");
-                System.out.println("Nama  : " + anggota.getNama());
-                System.out.println("No HP : " + anggota.getNoHp());
-            } else {
-                System.out.println("ID anggota tidak terdaftar.");
-            }
+            toko.cariAnggota(id);
         } else if (pilih == 3) {
-            manager.tampilkanSemuaAnggota();
+            toko.lihatSemuaAnggota();
         } else {
             System.out.println("Pilihan tidak valid!");
         }
     }
 
-    static void simulasiTransaksi(Penyewaanmanager manager)
-            throws AlatTidakDitemukanException, DataTidakValidException {
-        System.out.println("\n--- SIMULASI TRANSAKSI / HITUNG BIAYA SEWA ---");
-        String kode = bacaString("Kode alat: ");
-        Alatpancing alat = manager.cariByKode(kode);
+    static void transaksiSewa(TokoPancing toko) throws DataTidakValidException {
+        System.out.println("\n--- TRANSAKSI SEWA (ASSOCIATION) ---");
+        String id = bacaString("ID anggota penyewa: ");
+
+        if (!toko.anggotaAda(id)) {
+            System.out.println("ID anggota tidak terdaftar. Transaksi dibatalkan.");
+            return;
+        }
+
+        Anggota penyewa = toko.getAnggota(id);
+        System.out.println("Halo, " + penyewa.getNama() + "! Pilih alat yang ingin disewa:");
+        toko.lihatPilihanAlat();
+
+        int nomor = bacaInt("Nomor alat: ");
+        if (nomor < 1 || nomor > toko.getJumlahAlat()) {
+            throw new DataTidakValidException("Nomor alat harus 1 sampai " + toko.getJumlahAlat() + "!");
+        }
+        Alatpancing alat = toko.getAlat(nomor - 1);
 
         int hari = bacaInt("Lama sewa (hari): ");
-        if (hari <= 0) {
-            throw new DataTidakValidException("Lama sewa harus lebih dari 0 hari!");
-        }
 
-        String idAnggota = bacaString("ID anggota (kosongkan jika bukan anggota): ");
-
-        if (idAnggota.trim().equals("")) {
-            prosesTransaksi(alat, hari);
-        } else if (manager.anggotaAda(idAnggota)) {
-            prosesTransaksi(alat, hari, true);
-        } else {
-            System.out.println("ID anggota tidak terdaftar, diproses sebagai non-member.");
-            prosesTransaksi(alat, hari);
-        }
+        TransaksiSewa.prosesSewa(penyewa, alat, hari);
     }
 
-    static void prosesTransaksi(Alatpancing alat, int hari) {
-        double total = alat.hitungBiayaSewa(hari);
-        cetakStruk(alat, hari, total, false);
-    }
-
-    static void prosesTransaksi(Alatpancing alat, int hari, boolean member) {
-        double total = alat.hitungBiayaSewa(hari, member);
-        cetakStruk(alat, hari, total, member);
-    }
-
-    static void cetakStruk(Alatpancing alat, int hari, double total, boolean member) {
-        System.out.println("\n===== STRUK TRANSAKSI =====");
-        alat.tampilkanInfo();
-        System.out.println("Lama sewa   : " + hari + " hari");
-        if (member) {
-            System.out.println("Status      : Member (dapat diskon 10%)");
-        } else {
-            System.out.println("Status      : Non-member");
-        }
-        System.out.printf("Total biaya : Rp%.0f%n", total);
-        System.out.println("============================");
-    }
-
-    static void aksiKhusus(Penyewaanmanager manager)
+    static void aksiKhusus(TokoPancing toko)
             throws AlatTidakDitemukanException, DataTidakValidException {
         System.out.println("\n--- AKSI KHUSUS (INTERFACE) ---");
         String kode = bacaString("Kode alat: ");
-        Alatpancing alat = manager.cariByKode(kode);
+        Alatpancing alat = toko.cariByKode(kode);
 
         System.out.println("Alat terpilih: " + alat.getNama() + " (" + alat.getJenis() + ")");
         System.out.println("1. Proses sewa fisik (serah terima alat)");
@@ -216,11 +186,11 @@ public class Main {
         }
     }
 
-    static void hitungDenda(Penyewaanmanager manager)
+    static void hitungDenda(TokoPancing toko)
             throws AlatTidakDitemukanException, DataTidakValidException {
         System.out.println("\n--- HITUNG DENDA KETERLAMBATAN ---");
         String kode = bacaString("Kode alat: ");
-        Alatpancing alat = manager.cariByKode(kode);
+        Alatpancing alat = toko.cariByKode(kode);
 
         int hariTerlambat = bacaInt("Terlambat berapa hari: ");
         if (hariTerlambat < 0) {
@@ -236,8 +206,9 @@ public class Main {
     public static void main(String[] args) {
         input.useLocale(Locale.US);
 
-        Penyewaanmanager manager = new Penyewaanmanager();
-        isiDataAwal(manager);
+        TokoPancing toko = new TokoPancing("Mancing Mania");
+        isiDataAwal(toko);
+        toko.bukaToko();
 
         int pilihan = 0;
 
@@ -249,10 +220,11 @@ public class Main {
             System.out.println("2. Tampilkan Seluruh Data Alat");
             System.out.println("3. Cari Alat");
             System.out.println("4. Kelola Anggota");
-            System.out.println("5. Simulasi Transaksi / Hitung Biaya Sewa");
+            System.out.println("5. Transaksi Sewa (Anggota + Alat)");
             System.out.println("6. Aksi Khusus (Sewa Fisik / Beri Rating)");
             System.out.println("7. Hitung Denda Keterlambatan");
-            System.out.println("8. Keluar");
+            System.out.println("8. Info Toko dan Gudang");
+            System.out.println("9. Keluar");
             System.out.println("-------------------------------------");
 
             try {
@@ -260,28 +232,32 @@ public class Main {
 
                 switch (pilihan) {
                     case 1:
-                        tambahData(manager);
+                        tambahData(toko);
                         break;
                     case 2:
                         System.out.println();
-                        manager.tampilkanSemua();
+                        toko.lihatSemuaAlat();
                         break;
                     case 3:
-                        cariAlat(manager);
+                        cariAlat(toko);
                         break;
                     case 4:
-                        kelolaAnggota(manager);
+                        kelolaAnggota(toko);
                         break;
                     case 5:
-                        simulasiTransaksi(manager);
+                        transaksiSewa(toko);
                         break;
                     case 6:
-                        aksiKhusus(manager);
+                        aksiKhusus(toko);
                         break;
                     case 7:
-                        hitungDenda(manager);
+                        hitungDenda(toko);
                         break;
                     case 8:
+                        System.out.println();
+                        toko.bukaToko();
+                        break;
+                    case 9:
                         System.out.println("Terima kasih, sampai jumpa!");
                         break;
                     default:
@@ -295,7 +271,7 @@ public class Main {
             } catch (AlatTidakDitemukanException e) {
                 System.out.println("Data tidak ditemukan: " + e.getMessage());
             }
-        } while (pilihan != 8);
+        } while (pilihan != 9);
 
         input.close();
     }
