@@ -8,9 +8,12 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
+import java.io.*;
 import java.util.*;
 
 public class TokoPancing {
+
+    public static final String FILE_DATA = "data_toko.dat";
 
     private String namaToko;
     private GudangAlat gudang;
@@ -131,6 +134,72 @@ public class TokoPancing {
             kemampuan = kemampuan + "[Dapat Dinilai] ";
         }
         System.out.println("         -> Kemampuan: " + kemampuan);
+    }
+
+    public void simpanDataKeFile() {
+        try {
+            FileOutputStream fileKeluar = new FileOutputStream(FILE_DATA);
+            ObjectOutputStream mesinPembeku = new ObjectOutputStream(fileKeluar);
+
+            mesinPembeku.writeObject(daftarAlat);
+            mesinPembeku.writeObject(dataAnggota);
+            mesinPembeku.writeInt(TransaksiSewa.getNomorTransaksi());
+
+            mesinPembeku.close();
+            System.out.println("Data berhasil disimpan ke " + FILE_DATA + " ("
+                    + daftarAlat.size() + " alat, " + dataAnggota.size() + " anggota).");
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan data: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean muatDataDariFile() {
+        File fileData = new File(FILE_DATA);
+        if (!fileData.exists()) {
+            System.out.println("File " + FILE_DATA + " belum ada. Memakai data awal.");
+            return false;
+        }
+        try {
+            FileInputStream fileMasuk = new FileInputStream(fileData);
+            ObjectInputStream mesinPembangkit = new ObjectInputStream(fileMasuk);
+
+            ArrayList<Alatpancing> alatTerbaca = (ArrayList<Alatpancing>) mesinPembangkit.readObject();
+            HashMap<String, Anggota> anggotaTerbaca = (HashMap<String, Anggota>) mesinPembangkit.readObject();
+            int nomorTrx = mesinPembangkit.readInt();
+
+            mesinPembangkit.close();
+
+            daftarAlat = alatTerbaca;
+            dataAnggota = anggotaTerbaca;
+            Alatpancing.setTotalAlat(daftarAlat.size());
+            TransaksiSewa.setNomorTransaksi(nomorTrx);
+
+            System.out.println("Data berhasil dimuat dari " + FILE_DATA + " ("
+                    + daftarAlat.size() + " alat, " + dataAnggota.size() + " anggota).");
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Gagal memuat data: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public void bacaLogTransaksi() {
+        File fileLog = new File(TransaksiSewa.FILE_LOG);
+        try {
+            Scanner mesinBaca = new Scanner(fileLog);
+            System.out.println("=========== ISI " + TransaksiSewa.FILE_LOG + " ===========");
+            int jumlahBaris = 0;
+            while (mesinBaca.hasNextLine()) {
+                System.out.println(mesinBaca.nextLine());
+                jumlahBaris++;
+            }
+            mesinBaca.close();
+            System.out.println("=========================================");
+            System.out.println("Total " + jumlahBaris + " catatan.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Log transaksi belum ada (belum ada transaksi sewa).");
+        }
     }
 
     public void tambahAnggota(Anggota anggota) throws DataTidakValidException {

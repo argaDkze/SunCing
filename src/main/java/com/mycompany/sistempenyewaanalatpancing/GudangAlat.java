@@ -4,11 +4,15 @@
  */
 package com.mycompany.sistempenyewaanalatpancing;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Hype AMD
  */
-public class GudangAlat {
+public class GudangAlat implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String nama;
     private int kapasitas;
@@ -37,3 +41,4 @@ public class GudangAlat {
         System.out.println("Sisa ruang                      : " + (kapasitas - jumlahTerisi) + " alat");
     }
 }
+

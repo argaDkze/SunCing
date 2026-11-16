@@ -8,7 +8,15 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
-public class Anggota {
+import java.io.Serializable;
+
+/**
+ *
+ * @author Hype AMD
+ */
+public class Anggota implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String nama;

@@ -207,7 +207,10 @@ public class Main {
         input.useLocale(Locale.US);
 
         TokoPancing toko = new TokoPancing("Mancing Mania");
-        isiDataAwal(toko);
+        // Deserialization otomatis saat program mulai; jika file belum ada, pakai data awal
+        if (!toko.muatDataDariFile()) {
+            isiDataAwal(toko);
+        }
         toko.bukaToko();
 
         int pilihan = 0;
@@ -224,7 +227,10 @@ public class Main {
             System.out.println("6. Aksi Khusus (Sewa Fisik / Beri Rating)");
             System.out.println("7. Hitung Denda Keterlambatan");
             System.out.println("8. Info Toko dan Gudang");
-            System.out.println("9. Keluar");
+            System.out.println("9. Simpan Data ke File (Serialization)");
+            System.out.println("10. Muat Data dari File (Deserialization)");
+            System.out.println("11. Lihat Log Transaksi (.txt)");
+            System.out.println("12. Simpan dan Keluar");
             System.out.println("-------------------------------------");
 
             try {
@@ -258,6 +264,17 @@ public class Main {
                         toko.bukaToko();
                         break;
                     case 9:
+                        toko.simpanDataKeFile();
+                        break;
+                    case 10:
+                        toko.muatDataDariFile();
+                        break;
+                    case 11:
+                        System.out.println();
+                        toko.bacaLogTransaksi();
+                        break;
+                    case 12:
+                        toko.simpanDataKeFile();
                         System.out.println("Terima kasih, sampai jumpa!");
                         break;
                     default:
@@ -271,7 +288,7 @@ public class Main {
             } catch (AlatTidakDitemukanException e) {
                 System.out.println("Data tidak ditemukan: " + e.getMessage());
             }
-        } while (pilihan != 9);
+        } while (pilihan != 12);
 
         input.close();
     }

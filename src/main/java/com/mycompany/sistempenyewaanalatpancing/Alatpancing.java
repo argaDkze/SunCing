@@ -8,7 +8,11 @@ package com.mycompany.sistempenyewaanalatpancing;
  *
  * @author Hype AMD
  */
-public abstract class Alatpancing {
+import java.io.Serializable;
+
+public abstract class Alatpancing implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String kode;
     private String nama;
@@ -82,6 +86,10 @@ public abstract class Alatpancing {
 
     public static int getTotalAlat() {
         return totalAlat;
+    }
+
+    public static void setTotalAlat(int total) {
+        totalAlat = total;
     }
 
     public String getJenis() {
